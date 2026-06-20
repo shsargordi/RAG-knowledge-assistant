@@ -14,3 +14,22 @@ This project implements a simple RAG-style chatbot for an insurance knowledge ba
 ## Tech Stack
 
 Python • Ollama • OpenAI SDK • Gradio
+
+
+## Vector-Based RAG Chatbot
+
+![Vector RAG Chatbot](chatbot-demo2.png)
+
+This version extends the basic chatbot into a semantic RAG pipeline. It loads local documents, splits them into chunks, creates embeddings, stores them in ChromaDB, retrieves relevant context with LangChain, and generates answers using a local Ollama model.
+
+### Additional Features
+
+- Semantic search with vector embeddings
+- ChromaDB vector database
+- LangChain retriever
+- Local Ollama LLM
+- Gradio chatbot interface
+
+### Additional Tech Stack
+
+LangChain • ChromaDB • Hugging Face Embeddings
