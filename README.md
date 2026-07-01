@@ -33,3 +33,28 @@ This version extends the basic chatbot into a semantic RAG pipeline. It loads lo
 ### Additional Tech Stack
 
 LangChain • ChromaDB • Hugging Face Embeddings
+
+
+## Insurellm Expert Assistant Web App
+
+![Insurellm Expert Assistant](chatbot-demo3.png)
+
+This version turns the vector-based RAG chatbot into a Gradio web app. Users can ask questions about the Insurellm knowledge base, receive answers from a local Ollama model, and view the retrieved source context used to generate each response.
+
+### Run
+
+Build the vector database:
+
+```bash
+uv run implementation/ingest.py
+```
+
+Launch the app:
+
+```bash
+uv run app.py
+```
+
+### Difference from the Notebooks
+
+The notebook versions were for experimentation and learning. This version is organized as a reusable app with separate files for ingestion, retrieval/answering, and the Gradio interface.
