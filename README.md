@@ -1,4 +1,5 @@
-# RAG Chatbot Projects with Ollama, Gradio, ChromaDB, and Evaluation
+# RAG Chatbot Projects: Ollama, Gradio, LangChain, Vector Search, and Evaluation
+
 
 This repository contains four progressive RAG projects for an insurance knowledge base, starting from a basic chatbot and ending with a RAG evaluation dashboard.
 
