@@ -8,7 +8,7 @@ This repository contains four progressive RAG projects for an insurance knowledg
 
 ![Chatbot Demo](chatbot-demo.png)
 
-This project implements a simple RAG-style chatbot for an insurance knowledge base. It loads local documents, retrieves relevant context using keyword matching, and generates answers using a local Ollama LLM through a Gradio interface. 
+This project implements a simple RAG-style chatbot for an insurance knowledge base. It loads local documents, retrieves relevant context using keyword matching, and generates answers using a local Ollama LLM through a Gradio interface. Related notebook: `keyword_retrieval_chatbot.ipynb`
 
 ### Features
 
@@ -20,14 +20,13 @@ This project implements a simple RAG-style chatbot for an insurance knowledge ba
 ### Tech Stack
 
 Python • Ollama • OpenAI SDK • Gradio
-**Related notebook:** `keyword_retrieval_chatbot.ipynb`
 ---
 
 ## 2. Vector-Based RAG Chatbot
 
 ![Vector RAG Chatbot](chatbot-demo2.png)
 
-This version extends the basic chatbot into a semantic RAG pipeline. It loads local documents, splits them into chunks, creates embeddings, stores them in ChromaDB, retrieves relevant context with LangChain, and generates answers using a local Ollama model.
+This version extends the basic chatbot into a semantic RAG pipeline. It loads local documents, splits them into chunks, creates embeddings, stores them in ChromaDB, retrieves relevant context with LangChain, and generates answers using a local Ollama model. Related notebook: `vector_rag_chatbot.ipynb`
 
 ### Features
 
@@ -40,8 +39,6 @@ This version extends the basic chatbot into a semantic RAG pipeline. It loads lo
 ### Tech Stack
 
 LangChain • ChromaDB • Hugging Face Embeddings • Ollama • Gradio
-**Related notebook:** `vector_rag_chatbot.ipynb`
-
 ---
 
 ## 3. Insurellm Expert Assistant Web App
