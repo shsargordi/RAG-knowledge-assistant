@@ -20,7 +20,6 @@ This project implements a simple RAG-style chatbot for an insurance knowledge ba
 ### Tech Stack
 
 Python • Ollama • OpenAI SDK • Gradio
-
 **Related notebook:** `keyword_retrieval_chatbot.ipynb`
 ---
 
