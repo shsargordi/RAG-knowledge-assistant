@@ -1,105 +1,114 @@
-# RAG Chatbot Projects: Ollama, Gradio, LangChain, Vector Search, and Evaluation
+# RAG Knowledge Assistant
+
+A retrieval-augmented question-answering system over an insurance knowledge base, running fully locally — semantic retrieval with ChromaDB, generation with Ollama, and an evaluation dashboard that scores both retrieval and answer quality.
+
+![Assistant answering a question with retrieved sources](chatbot-demo3.png)
+
+## Results
+
+Evaluated on 150 questions across 7 question categories.
+
+<!-- **Retrieval**
+
+| Metric | Score | Measures |
+|---|---|---|
+| Mean Reciprocal Rank | **0.7604** | How highly the correct source ranks |
+| Normalized DCG | **0.7657** | Rank-weighted relevance across retrieved chunks |
+| Keyword coverage | **91.9%** | Expected terms present in retrieved context |
+
+**Answer quality** (LLM judge, 1–5 scale)
+
+| Metric | Score |
+|---|---|
+| Accuracy | **4.28 / 5** |
+| Completeness | **4.21 / 5** |
+| Relevance | **4.22 / 5** | -->
 
 
-This repository contains four progressive RAG projects for an insurance knowledge base, starting from a basic chatbot and ending with a RAG evaluation dashboard.
+**Retrieval Evaluation and Answer Quality Evaluation (Using an LLM as a Judge)**
 
----
+![Retrieval evaluation dashboard](Eval1.png)
 
-## 1. Basic RAG Chatbot with Ollama and Gradio
 
-![Chatbot Demo](chatbot-demo.png)
+![Answer quality evaluation](Eval2.png)
 
-This project implements a simple RAG-style chatbot for an insurance knowledge base. It loads local documents, retrieves relevant context using keyword matching, and generates answers using a local Ollama LLM through a Gradio interface. Related notebook: `keyword_retrieval_chatbot.ipynb`
+<!-- Aggregate scores hid the interesting failure. Broken down by category, retrieval is strong on questions answerable from a single passage — `numerical` (0.89) and `direct_fact` (0.87) — but drops sharply on `spanning` (0.45) and `holistic` (0.58), where the answer is distributed across several documents. Answer quality follows the same shape: `holistic` scores 3.4/5 against 4.6/5 for `direct_fact`. The bottleneck is retrieval, not generation — when the right chunks are found, the model uses them well. -->
 
-### Features
+## Quickstart
 
-* Local knowledge-base retrieval
-* Context-aware question answering
-* Ollama LLM integration
-* Gradio chatbot interface
-
-### Tech Stack
-
-Python • Ollama • OpenAI SDK • Gradio
----
-
-## 2. Vector-Based RAG Chatbot
-
-![Vector RAG Chatbot](chatbot-demo2.png)
-
-This version extends the basic chatbot into a semantic RAG pipeline. It loads local documents, splits them into chunks, creates embeddings, stores them in ChromaDB, retrieves relevant context with LangChain, and generates answers using a local Ollama model. Related notebook: `vector_rag_chatbot.ipynb`
-
-### Features
-
-* Semantic search with vector embeddings
-* ChromaDB vector database
-* LangChain retriever
-* Local Ollama LLM
-* Gradio chatbot interface
-
-### Tech Stack
-
-LangChain • ChromaDB • Hugging Face Embeddings • Ollama • Gradio
----
-
-## 3. Insurellm Expert Assistant Web App
-
-![Insurellm Expert Assistant](chatbot-demo3.png)
-
-This version turns the vector-based RAG chatbot into a reusable Gradio web app. Users can ask questions about the Insurellm knowledge base, receive answers from a local Ollama model, and view the retrieved source context used to generate each response.
-
-### Run
-
-Build the vector database:
+Requires [uv](https://docs.astral.sh/uv/) and a running [Ollama](https://ollama.com) instance.
 
 ```bash
-uv run implementation/ingest.py
+git clone https://github.com/shsargordi/RAG-knowledge-assistant.git
+cd RAG-knowledge-assistant
+uv sync
+
+ollama pull llama3.2
+
+uv run implementation/ingest.py   # build the vector store
+uv run app.py                    
 ```
 
-Launch the app:
+## How it works
+
+```
+knowledge-base/*.md
+        │
+        ▼
+   ingest.py ──► chunk ──► MiniLM embeddings ──► ChromaDB
+                                                     │
+   user question ──► retrieve top-k ──► prompt with context ──► Ollama ──► answer + sources
+```
+
+- **Ingestion** (`implementation/ingest.py`) — loads markdown documents, splits them with a recursive character splitter, embeds each chunk with `all-MiniLM-L6-v2`, and persists to a local ChromaDB collection.
+- **Answering** (`implementation/answer.py`) — embeds the query, retrieves the top-k nearest chunks, and injects them into a grounded prompt. Retrieved chunks are returned alongside the answer, so the source of every response is visible.
+- **Interface** (`app.py`) — Gradio chat UI displaying both the answer and the context used to produce it.
+
+## Evaluation
+
+<!-- The evaluation harness scores the pipeline on two axes:
+
+- **Retrieval quality** — for each test question, how highly the ground-truth source ranks among retrieved chunks (MRR), rank-weighted relevance across the full result set (nDCG), and whether expected terms appear in the retrieved context at all (keyword coverage).
+- **Answer quality** — an LLM judge scores each generated answer for accuracy, completeness, and relevance against the retrieved context, catching answers that sound correct but aren't grounded. -->
+
+<!-- The test set spans seven question types: `direct_fact`, `temporal`, `comparative`, `numerical`, `relationship`, `spanning`, and `holistic`. Scoring by category rather than in aggregate is what exposed the multi-document retrieval gap — a single averaged number looked acceptable. -->
 
 ```bash
-uv run app.py
+uv run evaluation/build_testset.py   # regenerate the test set
+uv run evaluator.py                 
 ```
 
-### Project Structure
 
-* `implementation/ingest.py`: loads documents, creates chunks, vectorizes them, and stores them in ChromaDB
-* `implementation/answer.py`: retrieves relevant context and generates answers
-* `app.py`: launches the Gradio chatbot interface
+## Project structure
 
----
-
-## 4. RAG Evaluation Dashboard
-
-![RAG Evaluation Dashboard - Retrieval](Eval1.png)
-
-![RAG Evaluation Dashboard - Answers](Eval2.png)
-
-This project adds an evaluation dashboard for the Insurellm RAG system. It evaluates retrieval quality and answer quality, then displays the results in a Gradio dashboard with summary cards and category-level charts.
-
-### Run
-
-First, run the evaluation test preparation notebook:
-
-```bash
-evaluation_testset.ipynb
+```
+implementation/
+  ingest.py          document loading, chunking, embedding, persistence
+  answer.py          retrieval + grounded generation
+evaluation/
+  eval.py            retrieval and answer-quality metrics
+  build_testset.py   generates the evaluation test set
+app.py               chat interface
+evaluator.py         evaluation dashboard
+knowledge-base/      source documents
+notebooks/           exploratory work (see below)
 ```
 
-Then launch the evaluation dashboard:
+<!-- ## Stack
 
-```bash
-uv run evaluator.py
-```
+Python · LangChain · ChromaDB · Sentence Transformers · Ollama · Gradio -->
 
-### Project Structure
+## Notebooks
 
-* `evaluation_testset.ipynb`: prepares the evaluation test set
-* `evaluator.py`: launches the Gradio evaluation dashboard
-* `evaluation/eval.py`: runs retrieval and answer evaluation logic
+`notebooks/` contains the exploratory work behind the implementation: an initial keyword-matching prototype (`keyword_retrieval_chatbot.ipynb`) and the first vector-search pipeline (`vector_rag_chatbot.ipynb`). The production code in `implementation/` supersedes both.
 
----
+## Roadmap
 
-## Difference from the Notebooks
+- [ ] Cross-encoder reranking over a wider candidate set, targeting `spanning` and `holistic` recall
+- [ ] Hybrid retrieval (BM25 + dense) for exact-term and numerical queries
+- [ ] Keyword baseline scored on the same 150 questions, for a like-for-like comparison
+- [ ] Chunking strategy sweep, scored against the test set
 
-The notebook versions were used for experimentation and learning. The final versions are organized into reusable Python files for ingestion, retrieval, answering, app deployment, and evaluation.
+<!-- ## License
+
+MIT -->
