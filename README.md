@@ -79,6 +79,33 @@ uv run evaluator.py
 ```
 
 
+## pro_implementation
+
+A second, improved pipeline alongside `implementation/`:
+
+| Step | `implementation/` | `pro_implementation/` |
+|---|---|---|
+| Framework | LangChain (loaders, splitters, Chroma wrapper) | No LangChain — raw `chromadb`, `openai` client, `litellm` |
+| Document loading | LangChain `DirectoryLoader`/`TextLoader` | Plain Python file reading |
+| Chunking | `RecursiveCharacterTextSplitter` — fixed-size (500 chars, 200 overlap) | LLM (`gpt-oss:20b`) semantically splits each doc into headline + summary + original text |
+| Embeddings | HuggingFace `all-MiniLM-L6-v2` (via LangChain) | Ollama `nomic-embed-text` (direct API call) |
+| Vector store | LangChain's `Chroma` wrapper | Raw `chromadb.PersistentClient` |
+| Query rewriting | None — raw question used as-is | LLM rewrites the question using conversation history before searching |
+| Retrieval | Single vector search | Searches with both original and rewritten question, merges results |
+| Reranking | None — raw vector-search order | LLM reranks merged chunks by relevance before answering |
+| Generation model | Local `gpt-oss:20b` via `ChatOllama` | Groq-hosted `gpt-oss-120b` via `litellm` (cloud) |
+| History handling | Concatenated into retrieval query as plain text | Passed through rewrite step + full chat history in final prompt |
+
+![Chatbot answering questions the basic implementation couldn't](chatbot-demo4.png)
+
+Above: two questions that `implementation/` couldn't answer, correctly answered by `pro_implementation/`.
+
+To use it, switch the import in **`app.py`** and **`evaluation/eval.py`**:
+```python
+# from implementation.answer import answer_question, fetch_context
+from pro_implementation.answer import answer_question, fetch_context
+```
+
 ## Project structure
 
 ```
@@ -102,12 +129,12 @@ Python · LangChain · ChromaDB · Sentence Transformers · Ollama · Gradio -->
 
 `notebooks/` contains the exploratory work behind the implementation: an initial keyword-matching prototype (`keyword_retrieval_chatbot.ipynb`) and the first vector-search pipeline (`vector_rag_chatbot.ipynb`). The production code in `implementation/` supersedes both.
 
-## Roadmap
+<!-- ## Roadmap
 
 - [ ] Cross-encoder reranking over a wider candidate set, targeting `spanning` and `holistic` recall
 - [ ] Hybrid retrieval (BM25 + dense) for exact-term and numerical queries
 - [ ] Keyword baseline scored on the same 150 questions, for a like-for-like comparison
-- [ ] Chunking strategy sweep, scored against the test set
+- [ ] Chunking strategy sweep, scored against the test set -->
 
 <!-- ## License
 
