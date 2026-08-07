@@ -98,7 +98,7 @@ A second, improved pipeline alongside `implementation/`:
 
 ![Chatbot answering questions the basic implementation couldn't](chatbot-demo4.png)
 
-Above: two questions that `implementation/` couldn't answer, correctly answered by `pro_implementation/`.
+Above are two questions that our first implementation at `implementation/` couldn't answer but that our second implementation at `pro_implementation/` answered correctly.
 
 To use it, switch the import in **`app.py`** and **`evaluation/eval.py`**:
 ```python
