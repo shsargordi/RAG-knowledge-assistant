@@ -125,9 +125,9 @@ notebooks/           exploratory work (see below)
 
 Python · LangChain · ChromaDB · Sentence Transformers · Ollama · Gradio -->
 
-## Notebooks
+<!-- ## Notebooks
 
-`notebooks/` contains the exploratory work behind the implementation: an initial keyword-matching prototype (`keyword_retrieval_chatbot.ipynb`) and the first vector-search pipeline (`vector_rag_chatbot.ipynb`). The production code in `implementation/` supersedes both.
+`notebooks/` contains the exploratory work behind the implementation: an initial keyword-matching prototype (`keyword_retrieval_chatbot.ipynb`) and the first vector-search pipeline (`vector_rag_chatbot.ipynb`). The production code in `implementation/` supersedes both. -->
 
 <!-- ## Roadmap
 
