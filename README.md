@@ -2,7 +2,7 @@
 
 A retrieval-augmented question-answering system over an insurance knowledge base, running fully locally — semantic retrieval with ChromaDB, generation with Ollama, and an evaluation dashboard that scores both retrieval and answer quality.
 
-![Assistant answering a question with retrieved sources](chatbot-demo3.png)
+![Assistant answering a question with retrieved sources](images/chatbot-demo3.png)
 
 ## Results
 
@@ -27,10 +27,10 @@ Evaluated on 150 questions across 7 question categories.
 
 **Retrieval Evaluation and Answer Quality Evaluation (Using an LLM as a Judge)**
 
-![Retrieval evaluation dashboard](Eval1.png)
+![Retrieval evaluation dashboard](images/Eval1.png)
 
 
-![Answer quality evaluation](Eval2.png)
+![Answer quality evaluation](images/Eval2.png)
 
 <!-- Aggregate scores hid the interesting failure. Broken down by category, retrieval is strong on questions answerable from a single passage — `numerical` (0.89) and `direct_fact` (0.87) — but drops sharply on `spanning` (0.45) and `holistic` (0.58), where the answer is distributed across several documents. Answer quality follows the same shape: `holistic` scores 3.4/5 against 4.6/5 for `direct_fact`. The bottleneck is retrieval, not generation — when the right chunks are found, the model uses them well. -->
 
@@ -96,7 +96,7 @@ A second, improved pipeline alongside `implementation/`:
 | Generation model | Local `gpt-oss:20b` via `ChatOllama` | Groq-hosted `gpt-oss-120b` via `litellm` (cloud) |
 | History handling | Concatenated into retrieval query as plain text | Passed through rewrite step + full chat history in final prompt |
 
-![Chatbot answering questions the basic implementation couldn't](chatbot-demo4.png)
+![Chatbot answering questions the basic implementation couldn't](images/chatbot-demo4.png)
 
 Above are two questions that our first implementation at `implementation/` couldn't answer but that our second implementation at `pro_implementation/` answered correctly.
 
