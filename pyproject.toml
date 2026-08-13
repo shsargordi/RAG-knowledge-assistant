@@ -1,0 +1,33 @@
+[project]
+name = "rag-knowledge-assistant"
+version = "0.1.0"
+description = "A local-first RAG system over an insurance knowledge base, with a FastAPI backend, Gradio UI, and CI."
+requires-python = ">=3.12"
+dependencies = [
+    "chromadb",
+    "fastapi",
+    "gradio",
+    "langchain-chroma",
+    "langchain-community",
+    "langchain-core",
+    "langchain-huggingface",
+    "langchain-ollama",
+    "langchain-openai",
+    "langchain-text-splitters",
+    "litellm",
+    "openai",
+    "pandas",
+    "pydantic",
+    "python-dotenv",
+    "sentence-transformers",
+    "tenacity",
+    "tqdm",
+    "uvicorn",
+]
+
+[dependency-groups]
+dev = [
+    "httpx",
+    "pytest",
+    "ruff",
+]

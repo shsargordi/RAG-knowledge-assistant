@@ -1,6 +1,8 @@
 # RAG Knowledge Assistant
 
-A retrieval-augmented question-answering system over an insurance knowledge base, running fully locally — semantic retrieval with ChromaDB, generation with Ollama, and an evaluation dashboard that scores both retrieval and answer quality.
+![CI](https://github.com/shsargordi/RAG-knowledge-assistant/actions/workflows/ci.yml/badge.svg)
+
+A retrieval-augmented question-answering system over an insurance knowledge base, running fully locally — semantic retrieval with ChromaDB, generation with Ollama, and an evaluation dashboard that scores both retrieval and answer quality. Also exposed as a FastAPI backend, with CI running lint + tests on every push.
 
 ![Assistant answering a question with retrieved sources](images/chatbot-demo3.png)
 
@@ -47,6 +49,22 @@ ollama pull llama3.2
 
 uv run implementation/ingest.py   # build the vector store
 uv run app.py                    
+```
+
+## API
+
+A FastAPI backend wraps the same RAG pipeline for programmatic access.
+
+```bash
+uv run uvicorn api:app --reload
+```
+
+Interactive docs at `http://127.0.0.1:8000/docs`. Example request:
+
+```bash
+curl -X POST http://127.0.0.1:8000/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "Who is Avery?"}'
 ```
 
 ## How it works
@@ -116,6 +134,9 @@ evaluation/
   eval.py            retrieval and answer-quality metrics
   build_testset.py   generates the evaluation test set
 app.py               chat interface
+api.py                FastAPI backend
+tests/                API tests (run in CI)
+.github/workflows/    CI: lint + tests on every push
 evaluator.py         evaluation dashboard
 knowledge-base/      source documents
 notebooks/           exploratory work (see below)
